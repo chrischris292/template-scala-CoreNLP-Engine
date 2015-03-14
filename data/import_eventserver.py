@@ -33,13 +33,13 @@ if __name__ == '__main__':
     description="Import sample data for classification engine")
   parser.add_argument('--access_key', default='invald_access_key')
   parser.add_argument('--url', default="http://localhost:7070")
-  parser.add_argument('--file', default="./data/data.txt")
+  parser.add_argument('--file', default="data.txt")
 
   args = parser.parse_args()
   print args
 
   client = predictionio.EventClient(
-    access_key=args.access_key,
+    access_key="1WY94kyBdfYGzWyBiS6Gb9N1I77bTmCuvSmbTgpNxC6pNKNKBNGqY7aUhtO3KhYi",
     url=args.url,
     threads=5,
     qsize=500)
