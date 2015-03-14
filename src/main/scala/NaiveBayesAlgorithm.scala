@@ -10,6 +10,15 @@ import org.apache.spark.SparkContext
 
 import grizzled.slf4j.Logger
 
+import opennlp.tools.doccat.DoccatModel;
+import opennlp.tools.doccat.DocumentCategorizerEvaluator;
+import opennlp.tools.doccat.DocumentCategorizerME;
+import opennlp.tools.doccat.DocumentSample;
+import opennlp.tools.doccat.DocumentSampleStream;
+import opennlp.tools.util.InvalidFormatException;
+import opennlp.tools.util.ObjectStream;
+import opennlp.tools.util.PlainTextByLineStream;
+
 case class AlgorithmParams(
   lambda: Double
 ) extends Params
