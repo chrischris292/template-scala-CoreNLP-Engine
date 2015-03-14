@@ -27,7 +27,8 @@ class NaiveBayesAlgorithm(val ap: AlgorithmParams)
       " Please check if DataSource generates TrainingData" +
       " and Preprator generates PreparedData correctly.")
 
-    NaiveBayes.train(data.labeledPoints, ap.lambda)
+    //NaiveBayes.train(data.labeledPoints, ap.lambda)
+    //OPEN NLP ALGORITHM GOES HERE
   }
 
   def predict(model: NaiveBayesModel, query: Query): PredictedResult = {

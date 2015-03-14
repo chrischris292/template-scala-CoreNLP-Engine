@@ -29,22 +29,27 @@ class DataSource(val dsp: DataSourceParams)
   override
   def readTraining(sc: SparkContext): TrainingData = {
     val eventsDb = Storage.getPEvents()
-    val labeledPoints: RDD[LabeledPoint] = eventsDb.aggregateProperties(
+    val labeledPoints: RDD[Pair[Integer,String]] = eventsDb.aggregateProperties(
       appId = dsp.appId,
       entityType = "user",
       // only keep entities with these required properties defined
-      required = Some(List("plan", "attr0", "attr1", "attr2")))(sc)
+      //required = Some(List("id", "attr0", "attr1", "attr2")))(sc)
+      required = Some(List("id", "description")))(sc)
+
       // aggregateProperties() returns RDD pair of
       // entity ID and its aggregated properties
       .map { case (entityId, properties) =>
         try {
-          LabeledPoint(properties.get[Double]("plan"),
+          logger.info(properties.get[String]("Description"))
+          val data = new Pair(properties.get[Integer]("id"),properties.get[String]("Description"));  
+          data          
+         /* LabeledPoint(properties.get[Double]("plan"),
             Vectors.dense(Array(
               properties.get[Double]("attr0"),
               properties.get[Double]("attr1"),
               properties.get[Double]("attr2")
             ))
-          )
+          )*/
         } catch {
           case e: Exception => {
             logger.error(s"Failed to get properties ${properties} of" +
@@ -56,7 +61,7 @@ class DataSource(val dsp: DataSourceParams)
 
     new TrainingData(labeledPoints)
   }
-
+/*
   override
   def readEval(sc: SparkContext)
   : Seq[(TrainingData, EmptyEvaluationInfo, RDD[(Query, ActualResult)])] = {
@@ -110,9 +115,9 @@ class DataSource(val dsp: DataSourceParams)
         }
       )
     }
-  }
+  }*/
 }
 
 class TrainingData(
-  val labeledPoints: RDD[LabeledPoint]
+  val labeledPoints: RDD[Pair[Integer,String]]
 ) extends Serializable

@@ -4,42 +4,42 @@ Import sample data for classification engine
 
 import predictionio
 import argparse
+import csv
 
 def import_events(client, file):
-  f = open(file, 'r')
-  count = 0
-  print "Importing data..."
-  for line in f:
-    data = line.rstrip('\r\n').split(",")
-    plan = data[0]
-    attr = data[1].split(" ")
-    client.create_event(
-      event="$set",
-      entity_type="user",
-      entity_id=str(count), # use the count num as user ID
-      properties= {
-        "attr0" : int(attr[0]),
-        "attr1" : int(attr[1]),
-        "attr2" : int(attr[2]),
-        "plan" : int(plan)
-      }
-    )
-    count += 1
-  f.close()
-  print "%s events are imported." % count
+  with open("train.tsv") as f:
+    reader = csv.reader(f, delimiter="\t")
+    d = list(reader)
+    prev_sent_id = 0
+    d = d[1:]
+    for line in d:
+      if prev_sent_id == line[1]:        
+        continue
+      prev_sent_id = line[1]
+      client.create_event(
+        event="$set",
+        entity_type="user",
+        entity_id=int(line[0]),
+        properties= {
+          "description" : line[2],
+          "id" : int(line[1]),
+          "sentiment_id": int(line[3])
+        }
+      )
+  f.close()                                                                                                                                           
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(
     description="Import sample data for classification engine")
   parser.add_argument('--access_key', default='invald_access_key')
   parser.add_argument('--url', default="http://localhost:7070")
-  parser.add_argument('--file', default="data.txt")
+  parser.add_argument('--file', default="./train.tsv")
 
   args = parser.parse_args()
   print args
 
   client = predictionio.EventClient(
-    access_key="1WY94kyBdfYGzWyBiS6Gb9N1I77bTmCuvSmbTgpNxC6pNKNKBNGqY7aUhtO3KhYi",
+    access_key='VgN3DsprZExK4etsYORKeX6madpwYkcRWSUkUkTfygWdftwfD9YMf4ytyoJcELTW'                                                                                                   ,
     url=args.url,
     threads=5,
     qsize=500)
